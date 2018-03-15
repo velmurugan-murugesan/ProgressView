@@ -23,20 +23,29 @@ public class ProgressView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        int padding = canvasWidth / 10;
+
+        int startX = padding;
+        int startY = canvasHeight / 2;
+        int endX = canvasWidth - padding;
+        int endY = canvasHeight / 2;
+
         paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStrokeWidth(50);
-        paint.setColor(Color.BLUE);
-
-        int padding = canvasWidth / 10;
+        paint.setColor(Color.GRAY);
 
         Path path = new Path();
-        path.moveTo(padding,canvasHeight / 2 );
-        path.lineTo(canvasWidth - padding , canvasHeight / 2);
-
+        path.moveTo(startX,startY );
+        path.lineTo(endX , endY);
         canvas.drawPath(path,paint);
 
+        // Created Circle over progressbar
+        paint.setColor(Color.BLACK);
+        canvas.drawCircle(startX,startY,30,paint);
+        paint.setColor(Color.RED);
+        canvas.drawCircle(startX,startY,10,paint);
     }
 
     @Override
