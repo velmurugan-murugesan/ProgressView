@@ -7,6 +7,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 /**
@@ -14,7 +16,14 @@ import android.view.View;
  */
 
 public class ProgressView extends View {
+    private String TAG = ProgressView.class.getSimpleName();
     private Paint paint;
+    boolean isDragging = false;
+
+
+    private int circleX, circleY;
+    int startX,startY,endX,endY;
+
     int canvasWidth,canvasHeight;
     public ProgressView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -23,12 +32,7 @@ public class ProgressView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        int padding = canvasWidth / 10;
 
-        int startX = padding;
-        int startY = canvasHeight / 2;
-        int endX = canvasWidth - padding;
-        int endY = canvasHeight / 2;
 
         paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
@@ -43,9 +47,35 @@ public class ProgressView extends View {
 
         // Created Circle over progressbar
         paint.setColor(Color.BLACK);
-        canvas.drawCircle(startX,startY,30,paint);
+        canvas.drawCircle(circleX,startY,21,paint);
         paint.setColor(Color.RED);
-        canvas.drawCircle(startX,startY,10,paint);
+        canvas.drawCircle(circleX,startY,7,paint);
+
+
+
+
+
+        /*View view = new CircleView(getContext());
+        canvas.translate(startX, startY);
+        view.draw(canvas);
+        view.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        log("ACTION_DOWN");
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        log("ACTION_UP");
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        log("ACTION_MOVE");
+                        break;
+                }
+                return true;
+            }
+        });*/
+
     }
 
     @Override
@@ -53,5 +83,51 @@ public class ProgressView extends View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         canvasWidth = MeasureSpec.getSize(widthMeasureSpec);
         canvasHeight = MeasureSpec.getSize(heightMeasureSpec);
+
+        int padding = canvasWidth / 10;
+
+        startX = padding;
+        startY = canvasHeight / 2;
+        endX = canvasWidth - padding;
+        endY = canvasHeight / 2;
+        circleX = startX;
+        circleY = startY;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                log("ACTION_DOWN");
+                break;
+            case MotionEvent.ACTION_UP:
+                log("ACTION_UP");
+                isDragging = false;
+                break;
+            case MotionEvent.ACTION_MOVE:
+               // log("ACTION_MOVE");
+                float x = event.getX();
+                float y = event.getY();
+                log("x = "+x+" y = "+y);
+
+                if((x > (circleX - 30) && x < (circleX + 30)  && y > (circleY - 30) && y < (circleY + 30)) || isDragging){
+                        //log("YOU GOT IT");
+                        //log("isDragging = "+isDragging);
+                        isDragging = true;
+                        circleX = (int) x;
+                        circleY = (int) y;
+                        invalidate();
+                }
+                break;
+        }
+        return true;
+    }
+
+    private void moveCircle(float x, float y) {
+
+    }
+
+    private void log(String log){
+        Log.d(TAG,log);
     }
 }
