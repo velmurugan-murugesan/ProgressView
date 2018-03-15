@@ -20,19 +20,32 @@ public class ProgressView extends View {
     private Paint paint;
     boolean isDragging = false;
 
-
+    int padding;
     private int circleX, circleY;
     int startX,startY,endX,endY;
 
     int canvasWidth,canvasHeight;
+
+    int barsize;
+
+    UpdatePercentage updatePercentage;
+    public float getScrollPercentage() {
+        return scrollPercentage;
+    }
+
+    public void setScrollPercentage(int scrollPercentage) {
+        this.scrollPercentage = scrollPercentage;
+    }
+
+    float scrollPercentage;
     public ProgressView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        updatePercentage = (UpdatePercentage) context;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
 
         paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
@@ -51,9 +64,9 @@ public class ProgressView extends View {
         paint.setColor(Color.RED);
         canvas.drawCircle(circleX,startY,7,paint);
 
-
-
-
+        //Calcuclate Percentage
+        scrollPercentage = (float) (((circleX - padding) * 100)/ barsize);
+        updatePercentage.updatePercentage(scrollPercentage);
 
         /*View view = new CircleView(getContext());
         canvas.translate(startX, startY);
@@ -84,7 +97,7 @@ public class ProgressView extends View {
         canvasWidth = MeasureSpec.getSize(widthMeasureSpec);
         canvasHeight = MeasureSpec.getSize(heightMeasureSpec);
 
-        int padding = canvasWidth / 10;
+        padding = canvasWidth / 10;
 
         startX = padding;
         startY = canvasHeight / 2;
@@ -92,6 +105,8 @@ public class ProgressView extends View {
         endY = canvasHeight / 2;
         circleX = startX;
         circleY = startY;
+
+        barsize = canvasWidth - (padding * 2);
     }
 
     @Override
@@ -109,8 +124,7 @@ public class ProgressView extends View {
                 float x = event.getX();
                 float y = event.getY();
                 log("x = "+x+" y = "+y);
-
-                if((x > (circleX - 30) && x < (circleX + 30)  && y > (circleY - 30) && y < (circleY + 30)) || isDragging){
+                if((x > (circleX - 21) && x < (circleX + 21)  && y > (circleY - 21) && y < (circleY + 21)) || isDragging){
                         //log("YOU GOT IT");
                         //log("isDragging = "+isDragging);
                         isDragging = true;
@@ -122,12 +136,8 @@ public class ProgressView extends View {
         }
         return true;
     }
-
-    private void moveCircle(float x, float y) {
-
-    }
-
     private void log(String log){
         Log.d(TAG,log);
     }
+
 }
