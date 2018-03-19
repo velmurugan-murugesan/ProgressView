@@ -124,14 +124,21 @@ public class ProgressView extends View {
                 float x = event.getX();
                 float y = event.getY();
                 log("x = "+x+" y = "+y);
-                if((x > (circleX - 21) && x < (circleX + 21)  && y > (circleY - 21) && y < (circleY + 21)) || isDragging){
-                        //log("YOU GOT IT");
-                        //log("isDragging = "+isDragging);
+                log("Circle X"+circleX+" startX= "+startX);
+                if(circleX >= startX){
+                    if((x > (circleX - 21) && x < (circleX + 21)  && y > (circleY - 21) && y < (circleY + 21)) || (((circleX >= startX)) && isDragging)){
                         isDragging = true;
                         circleX = (int) x;
                         circleY = (int) y;
-                        invalidate();
+                        if(circleX >= startX) {
+                            invalidate();
+                        }
+                        //log("YOU GOT IT");
+                        //log("isDragging = "+isDragging);
+
+                    }
                 }
+
                 break;
         }
         return true;
